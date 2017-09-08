@@ -1,26 +1,21 @@
-const http = require('http');
-const url = require('url');
+const express = require('express');
+const parser = require('body-parser');
+const logger = require('morgan');
+const path = require('path');
 const routes = require('./requestRoutes');
-const request = require('./requests');
 
 const port = 3000;
 
-const ip = '127.0.0.1';
+const app = express();
 
-const router = {
-  '/': routes.static,
-  '/bundle.js': routes.static,
-  '/api/mymemes': routes.mymemes,
-};
+app.use(parser.json());
+app.use(parser.urlencoded({ extended: true }));
+app.use(logger('dev'));
 
-const server = http.createServer((req, res) => {
-  console.log(`serving request type ${req.method} for url ${req.url}`);
+app.use(express.static(path.join(__dirname, '../client/static')));
 
-  const route = router[url.parse(req.url).pathname];
+app.use('/api', routes);
 
-  route ? route[req.method](req, res) : request.sendResponse(res, '', 404);
+app.listen(port, () => {
+  console.log(`node listening on port ${port}`);
 });
-
-console.log(`listening on port ${port}`);
-
-server.listen(port, ip);
