@@ -1,6 +1,6 @@
 const fs = require('fs');
 const requests = require('./requests');
-const myMemes = require('../data/data');
+const myMemes = require('../data');
 
 module.exports = {
 
@@ -27,10 +27,6 @@ module.exports = {
         myMemes.push(data);
         requests.sendResponse(res, myMemes, 201);
       });
-    },
-
-    OPTIONS: (req, res) => {
-      requests.sendResponse(res, null);
     },
   },
 };
